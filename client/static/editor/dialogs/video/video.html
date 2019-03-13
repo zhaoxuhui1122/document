@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>video</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+    <link rel="stylesheet" href="./video.css">
+    <script type="text/javascript" src="../internal.js"></script>
+
+</head>
+<body>
+<div class="upload-container">
+    <div class="nav">
+        <span class="active">插入链接</span>
+        <span>本地上传</span>
+    </div>
+    <div class="head">
+        <div class="insert-url item">
+            <label for="video-url">视频链接</label>
+            <input id="video-url" type="text">
+        </div>
+        <div class="upload-local item">
+            <label for="file">选择文件</label>
+            <input id="file" type="file" accept="video/*">
+        </div>
+    </div>
+    <div class="body">
+        <div class="preview">
+            <video src="" id="video"></video>
+        </div>
+        <ul class="setting">
+            <li><label for="width">宽度：</label><input id="width" type="number"></li>
+            <li><label for="height">高度：</label><input id="height" type="number"></li>
+        </ul>
+    </div>
+    <div class="upload-local-loading">
+        <div class="c-loading">
+            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="../../third-party/jquery-1.10.2.min.js"></script>
+<script>
+    $(function () {
+        // ajax
+        function post(url, data) {
+            return new Promise(function (resolve, reject) {
+                var client = new XMLHttpRequest();
+                client.open('POST', url);
+                client.onreadystatechange = handler;
+                client.responseType = 'json';
+                client.setRequestHeader('Accept', 'application/json');
+                client.withCredentials = true;
+                client.send(data);
+
+                function handler() {
+                    if (this.readyState !== 4) {
+                        return;
+                    }
+                    if (this.status === 200) {
+                        resolve(this.response);
+                    } else {
+                        reject(new Error(this.responseText));
+                    }
+                }
+            })
+        }
+
+        var index = 0;
+        var path = '' ;
+        var width  = '';
+        var height = '' ;
+        $('.nav span').click(function () {
+            index = $(this).index();
+
+            $(this).addClass('active').siblings('span').removeClass('active');
+            $('.head .item').css({
+                display : 'none'
+            }).eq(index).css({
+                display : 'flex'
+            })
+            document.getElementById('video').setAttribute('src', '');
+        })
+        $('#video-url').blur(function () {
+            const url = $(this).val();
+            path = url ;
+            if (url == '') {
+                return;
+            }
+            const video = document.getElementById('video');
+            const height = document.getElementById('height').value;
+            const width = document.getElementById('width').value;
+            if (width) {
+                video.setAttribute('width', parseInt(width));
+            } else if (height) {
+                video.setAttribute('height', parseInt(height));
+            }
+            video.setAttribute('src', url);
+            video.play();
+            video.onerror = function (res) {
+                alert('资源加载失败：' + video.error.message);
+            }
+
+        })
+
+        document.getElementById('file').addEventListener('change', async function (e) {
+            const file = e.target.files[0];
+            const formData = new FormData();
+            const name = file.name;
+            formData.append('file', file);
+            formData.append('name', name);
+            const size = file.size;
+            if (size>20 * 1024 * 1024) {
+                alert('文件大小不能超过20M');
+                return;
+            }
+            $('.upload-local-loading').show();
+            const res = await post('http://localhost:3000/file/upload', formData);
+            $('.upload-local-loading').hide();
+            const video = document.getElementById('video');
+             height = document.getElementById('height').value;
+             width = document.getElementById('width').value;
+            path = res.data.path ;
+            if (res.resultCode) {
+                video.setAttribute('src', path);
+                video.play();
+            }
+        })
+
+        dialog.onok = function () {
+            const content =`<video src="${path}" height="${height}" width="${width?width:'100%'}"></video>`;
+            editor.setContent(content,true);
+            dialog.close();
+        }
+    })
+</script>

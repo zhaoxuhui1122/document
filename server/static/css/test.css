@@ -1,0 +1,52 @@
+ * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f7f7f7;
+        }
+
+        .header {
+            height: 60px;
+            background: #333;
+        }
+
+        .banner img {
+            width: 100%;
+        }
+
+        .main {
+            display: flex;
+            width: 1000px;
+            margin: 40px auto;
+            background: #fff;
+        }
+        .main ul{
+            width: 300px;
+            border-right: 1px solid #ededed ;
+            margin-right: 20px;
+            padding: 20px 12px;
+            list-style: none;
+        }
+        .main ul li{
+            line-height: 40px;
+            margin-bottom: 10px;
+            padding: 0 10px ;
+            border-bottom: 1px dashed #ededed ;
+        }
+        .main ul li.active{
+            background: lightcoral;
+            color: #fff;
+        }
+        .main .content{
+            flex: 1;
+            height: 420px ;
+            background: url(https://smalleyes.oss-cn-shanghai.aliyuncs.com/d55b16c9aa179756255081380510220e.jpg) no-repeat;
+            background-size:cover;
+        }
+        .footer{
+            height: 200px;
+            background: #333;
+        }

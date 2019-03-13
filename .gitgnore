@@ -1,0 +1,23 @@
+
+
+.DS_Store
+# Editor directories and files
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.idea/workspace.xml
+.idea/encodings.xml
+
+node_modules
+logs/*
+.idea/
+client/node_modules/
+client/dist/
+client/electron/build/
+client/electron/node_modules/
+server/node_modules/
+server/logs/
+server/static/product/
+

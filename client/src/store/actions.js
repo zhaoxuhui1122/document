@@ -1,7 +1,0 @@
-/*
-* actions
-* */
-
-export default {
-
-};
